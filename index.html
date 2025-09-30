@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+    <link rel="stylesheet" href="scc.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>rani shop</title>
+    <title>karim shop</title>
     <style>
         /* ====================================
            1. التنسيقات الأساسية
@@ -60,8 +61,8 @@
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
         .product-card img {
-            width: 100%;
-            height: 200px;
+            width: 20%;
+            height: 300px;
             object-fit: cover;
             border-bottom: 1px solid #dee2e6;
         }
@@ -181,24 +182,31 @@
     </style>
 </head><body>
     <header>
-        <h1>متجر المنتجات الرائعة</h1>
-        <nav>
-            <a href="shop.html">🛒 السلة</a>
-        </nav>
-    </header>
-
-                <div class="product-card" data-name="هاتف ذكي 5G" data-price="120000">
-                    <img src="photo.jpg" alt="هاتف ذكي">
+        <h1>karim shop</h1>
+        <div class="container">
+        <a href="#" class="logo">APPLE STORE</a>
+        <nav> </nav>   
+            <a href="cart.html" class="cart-link">
+                🛒 السلة (<span id="cart-count">0</span>)
+            </a>
+            </nav>
+    </div>
+</header>
+    </header> 
+               
+                <div class="product-card" data-id="applewatch" data-name="apple watch" data-price="12000">
+                    <img src="https://i0.wp.com/www.iconcept-dz.com/wp-content/uploads/2022/10/MQEE3_VW_34FRwatch-49-titanium-ultra_VW_34FR_WF_COwatch-face-49-ocean-ultra_VW_34FR_WF_CO.jpg?fit=1400%2C1400&ssl=1" alt="هاتف ذكي">
                     <div class="product-info">
                         <h3>apple watch</h3>
-                        <p>شاشة AMOLED وكاميرا احترافية.</p>
-                        <div class="price">120,000 دج</div>
+                        <p>ساعة ذكية</p>
+                        <div class="price">12,000 دج</div>
                         <button class="add-to-cart-btn">أضف إلى السلة</button>
                     </div>
                 </div>
 
-                <div class="product-card" data-name="سماعات لاسلكية برو" data-price="15000">
-                    <img src="https://via.placeholder.com/300x200?text=سماعات+برو" alt="سماعات رأس">
+                <div class="product-card"
+                 data-id="سماعات لاسلكية مانعة للضوضاء" data-name="سماعات لاسلكية مانعة للضوضاء" data-price="15000">
+                    <img src="https://manuals.plus/wp-content/uploads/2022/03/Apple-AirPods-Max-Sky-Blue-headphones-image.jpg" alt="سماعات رأس">
                     <div class="product-info">
                         <h3>سماعات لاسلكية مانعة للضوضاء</h3>
                         <p>صوت نقي وبطارية تدوم طويلاً.</p>
@@ -207,134 +215,15 @@
                     </div>
                 </div>
 
-                <div class="product-card" data-name="ساعة ذكية الترا" data-price="28000">
-                    <img src="https://via.placeholder.com/300x200?text=ساعة+رياضية" alt="ساعة ذكية">
+                <div class="product-card" data-id="power banc" data-name="power banc" data-price="28000">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2pCA-0Jr77W0EWWJQzHOiMKoB-vjYOdmkLg&s" alt="ساعة ذكية">
                     <div class="product-info">
-                        <h3>ساعة ذكية رياضية مقاومة للماء</h3>
-                        <p>تتبع اللياقة ونظام GPS مدمج.</p>
-                        <div class="price">28,000 دج</div>
+                        <h3>power banc</h3>
+                        <p>GPS مدمج.</p>
+                        <div class="price">8,000 دج</div>
                         <button class="add-to-cart-btn">أضف إلى السلة</button>
                     </div>
                 </div>
-            </div> </div> </div> <script>
-        let cart = [];
-        const cartItemsElement = document.getElementById('cart-items');
-        const totalPriceElement = document.getElementById('total-price');
-        const cartCountElement = document.getElementById('cart-count');
-        const confirmBtn = document.getElementById('confirm-order-btn');
-        const messageElement = document.getElementById('message');
-        const checkoutForm = document.getElementById('checkout-form');
-
-        // وظيفة تنسيق الأرقام بفاصلة الآلاف
-        function formatPrice(number) {
-            return number.toLocaleString('ar-DZ', { style: 'currency', currency: 'DZD', minimumFractionDigits: 0 }).replace('د.ج.', 'دج');
-        }
-
-        // 1. وظيفة إضافة المنتج للسلة
-        function addToCart(event) {
-            const productCard = event.target.closest('.product-card');
-            const name = productCard.getAttribute('data-name');
-            const price = parseInt(productCard.getAttribute('data-price'));
-            
-            const existingItem = cart.find(item => item.name === name);
-
-            if (existingItem) {
-                existingItem.quantity += 1;
-            } else {
-                cart.push({ name, price, quantity: 1 });
-            }
-
-            renderCart();
-        }
-
-        // 2. وظيفة إزالة المنتج من السلة
-        function removeFromCart(itemName) {
-            const itemIndex = cart.findIndex(item => item.name === itemName);
-
-            if (itemIndex > -1) {
-                cart.splice(itemIndex, 1);
-            }
-            renderCart();
-        }
-
-        // 3. وظيفة عرض وتحديث السلة
-        function renderCart() {
-            cartItemsElement.innerHTML = ''; 
-            let total = 0;
-            let totalItems = 0;
-
-            cart.forEach(item => {
-                const itemTotal = item.price * item.quantity;
-                total += itemTotal;
-                totalItems += item.quantity;
-
-                const li = document.createElement('li');
-                li.innerHTML = `
-                    <button class="remove-btn" data-name="${item.name}">حذف</button>
-                    ${item.name} (${formatPrice(item.price)}) x${item.quantity}
-                `;
-                cartItemsElement.appendChild(li);
-            });
-
-            // تحديث الإجمالي وعدد العناصر
-            totalPriceElement.textContent = formatPrice(total);
-            cartCountElement.textContent = totalItems;
-
-            // تفعيل/تعطيل زر تأكيد الطلب بناءً على وجود عناصر في السلة
-            if (cart.length > 0) {
-                confirmBtn.removeAttribute('disabled');
-            } else {
-                confirmBtn.setAttribute('disabled', 'disabled');
-            }
-
-            // إضافة مستمعي الأحداث لأزرار الحذف الجديدة
-            document.querySelectorAll('.remove-btn').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    const itemName = e.target.getAttribute('data-name');
-                    removeFromCart(itemName);
-                });
-            });
-        }
-
-        // 4. ربط زر "أضف إلى السلة" بالوظيفة
-        document.querySelectorAll('.add-to-cart-btn').forEach(button => {
-            button.addEventListener('click', addToCart);
-        });
-
-        // 5. معالجة نموذج تأكيد الطلب
-        checkoutForm.addEventListener('submit', function(event) {
-            event.preventDefault(); // منع إعادة تحميل الصفحة الافتراضية
-
-            if (cart.length === 0) {
-                alert('الرجاء إضافة منتجات إلى السلة أولاً.');
-                return;
-            }
-
-            // هنا يمكنك إرسال البيانات (بالطبع تحتاج لخلفية (Backend) حقيقية)
-            const formData = {
-                name: document.getElementById('full-name').value,
-                phone: document.getElementById('phone').value,
-                wilaya: document.getElementById('wilaya').value,
-                address: document.getElementById('address').value,
-                order_items: cart,
-                total_amount: totalPriceElement.textContent
-            };
-
-            // عرض رسالة التأكيد بدلاً من الإرسال الفعلي
-            console.log('بيانات الطلب الجاهزة للإرسال:', formData);
-            messageElement.style.display = 'block';
-            checkoutForm.reset(); // تفريغ النموذج
-            cart = []; // تفريغ السلة
-            renderCart(); // تحديث عرض السلة لتصبح فارغة
-
-            // إخفاء رسالة التأكيد بعد 5 ثوان
-            setTimeout(() => {
-                messageElement.style.display = 'none';
-            }, 5000);
-        });
-
-        // تشغيل السلة لأول مرة عند تحميل الصفحة
-        renderCart();
-    </script>
+<script src="script.js"></script>
 </body>
 </html>
