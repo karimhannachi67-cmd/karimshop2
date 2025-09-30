@@ -1,0 +1,180 @@
+/* -------------------- 1. المتغيرات والألوان الأساسية -------------------- */
+:root {
+    --primary-color: #007bff;   /* أزرق نقي للتركيز (Apple Blue/ Cyan) */
+    --accent-color: #28a745;    /* أخضر لزر الشراء والسعر */
+    --text-dark: #343a40;       /* لون نص غامق */
+    --text-light: #6c757d;      /* لون نص ثانوي (للوصف) */
+    --background-soft: #f8f9fa; /* خلفية ناعمة جداً */
+    --card-bg: #ffffff;         /* خلفية البطاقة بيضاء */
+    --shadow-subtle: 0 4px 12px rgba(0, 0, 0, 0.05); /* ظل خفيف */
+}
+
+body {
+    font-family: 'Cairo', sans-serif; /* يجب ربط خط القاهرة في HTML */
+    margin: 0;
+    padding: 0;
+    background-color: var(--background-soft);
+    color: var(--text-dark);
+    direction: rtl;
+    line-height: 1.6;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+/* -------------------- 2. الهيدر وشريط التنقل -------------------- */
+header {
+    background-color: var(--text-dark); /* شريط علوي غامق وأنيق */
+    color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    padding: 10px 0;
+}
+
+header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.8em;
+    font-weight: 700;
+    color: white;
+    text-decoration: none;
+}
+
+nav a {
+    color: #ced4da;
+    text-decoration: none;
+    margin-right: 25px;
+    font-size: 1em;
+    transition: color 0.3s;
+}
+
+nav a:hover {
+    color: white;
+}
+
+.cart-link {
+    background-color: var(--primary-color);
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.cart-link:hover {
+    background-color: #0056b3;
+}
+
+/* -------------------- 3. قائمة المنتجات والشبكة -------------------- */
+.page-title {
+    text-align: center;
+    margin: 50px 0 40px;
+    font-size: 2.5em;
+    color: var(--text-dark);
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+}
+
+.product-card {
+    background-color: var(--card-bg);
+    border: 1px solid #e9ecef; /* حدود خفيفة */
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: var(--shadow-subtle);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.product-card:hover {
+    transform: translateY(-5px); /* رفع البطاقة عند التمرير */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.product-img {
+    width: 100%;
+    height: 220px;
+    object-fit: contain; /* للحفاظ على نسب المنتج */
+    padding: 20px;
+}
+
+.product-info {
+    padding: 20px;
+    text-align: right;
+}
+
+.product-info h3 {
+    margin-top: 0;
+    font-size: 1.3em;
+}
+
+.description {
+    color: var(--text-light);
+    font-size: 0.9em;
+    margin-bottom: 15px;
+}
+
+/* -------------------- 4. السعر وزر الشراء -------------------- */
+.price-action {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 15px;
+    margin-top: 15px;
+    border-top: 1px solid #dee2e6;
+}
+
+.price {
+    font-size: 1.5em;
+    font-weight: 700;
+    color: var(--accent-color); /* السعر باللون الأخضر الجذاب */
+}
+
+.add-to-cart-btn {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 50px; /* زر بيضاوي عصري */
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.add-to-cart-btn:hover {
+    background-color: #0056b3;
+}
+
+/* -------------------- 5. الفوتر (تذييل الصفحة) -------------------- */
+footer {
+    background-color: var(--text-dark);
+    color: #f8f9fa;
+    text-align: center;
+    padding: 20px 0;
+    margin-top: 50px;
+    font-size: 0.9em;
+}
+
+/* -------------------- 6. استجابة التصميم -------------------- */
+@media (max-width: 768px) {
+    .products-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+}
+@media (max-width: 576px) {
+    .price-action {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .add-to-cart-btn {
+        width: 100%;
+    }
+}
