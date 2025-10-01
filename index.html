@@ -1,6 +1,214 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+    <script>// =================================================================
+// 1. وظائف إدارة السلة الأساسية (Storage Management)
+// =================================================================
+
+// قراءة محتوى السلة من التخزين المحلي (Local Storage)
+function getCart() {
+    return JSON.parse(localStorage.getItem('shoppingCart')) || [];
+}
+
+// حفظ محتوى السلة في التخزين المحلي
+function saveCart(cart) {
+    localStorage.setItem('shoppingCart', JSON.stringify(cart));
+}
+
+
+function removeItem(productId, source) { 
+    if (confirm("هل أنت متأكد من حذف هذا المنتج؟")) {
+        let cart = getCart();
+        
+        // إزالة المنتج المطابق
+        cart = cart.filter(item => item.id !== productId);
+        
+        saveCart(cart);
+        updateCartCount();
+
+        // تحديث عرض السلة المصغرة فوراً إذا كان مصدر الحذف منها
+        if (source === 'mini') {
+            renderMiniCart(); // هذا السطر يضمن تحديث العرض
+        } 
+        
+        // إذا أنشأت صفحة السلة الكاملة (cart.html)، ستضيف دالة تحديثها هنا أيضاً
+    }
+}
+// ****************
+// تحديث عداد السلة في شريط التنقل
+function updateCartCount() {
+    const cart = getCart();
+    const countElement = document.getElementById('cart-count');
+    if (countElement) {
+        // حساب إجمالي عدد القطع في السلة
+        const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+        countElement.textContent = totalItems;
+    }
+}
+
+
+// =================================================================
+// 2. وظيفة الإضافة إلى السلة (في صفحة المنتجات)
+// =================================================================
+
+function addToCart(productName, productPrice, productId) {
+    let cart = getCart();
+    
+    // البحث إذا كان المنتج موجوداً بالفعل
+    const existingItem = cart.find(item => item.id === productId);
+
+    if (existingItem) {
+        existingItem.quantity += 1;
+    } else {
+        const newItem = {
+            id: productId,
+            name: productName,
+            price: productPrice,
+            quantity: 1
+        };
+        cart.push(newItem);
+    }
+    
+    saveCart(cart);
+    updateCartCount();
+    
+    // تحديث وعرض السلة المصغرة فور الإضافة
+    renderMiniCart();
+    
+    // عرض تنبيه بسيط أو فتح السلة المصغرة
+    const miniCart = document.getElementById('mini-cart');
+    if (miniCart && !miniCart.classList.contains('visible')) {
+        miniCart.classList.add('visible'); // إظهار السلة المصغرة تلقائياً
+        setTimeout(() => {
+             miniCart.classList.remove('visible'); // إخفاؤها بعد 4 ثواني
+        }, 4000); 
+    }
+}
+
+// =================================================================
+// 3. وظائف السلة المصغرة (Mini-Cart Logic)
+// =================================================================
+
+// 3.1 وظيفة التبديل بين إظهار وإخفاء السلة المصغرة
+function toggleMiniCart() {
+    const miniCart = document.getElementById('mini-cart');
+    if (miniCart) {
+        miniCart.classList.toggle('visible');
+        if (miniCart.classList.contains('visible')) {
+            // عند الإظهار، نقوم بتحميل محتوى السلة المصغرة
+            renderMiniCart(); 
+        }
+    }
+}
+
+// 3.2 وظيفة تحميل وعرض محتوى السلة المصغرة
+function renderMiniCart() {
+    const cart = getCart();
+    const itemsContainer = document.getElementById('mini-cart-items');
+    const totalElement = document.getElementById('mini-cart-total');
+    
+    if (!itemsContainer || !totalElement) return;
+
+    itemsContainer.innerHTML = ''; 
+    let subTotal = 0;
+
+    if (cart.length === 0) {
+        itemsContainer.innerHTML = '<p style="text-align: center; color: #6c757d; padding: 10px 0;">سلتك فارغة.</p>';
+        totalElement.textContent = '0 د.ج';
+        return;
+    }
+
+    cart.forEach(item => {
+    const itemTotal = item.price * item.quantity;
+    subTotal += itemTotal;
+    
+    const itemHtml = `
+        <div class="mini-cart-item">
+            <span class="item-details-mini">${item.name} (x${item.quantity})</span> 
+            <span class="item-total-price">${itemTotal.toLocaleString('ar-EG')} د.ج</span>
+            
+            <button class="remove-btn-mini" onclick="removeItem('${item.id}', 'mini')">×</button>
+        </div>
+    `;
+    itemsContainer.innerHTML += itemHtml;
+});
+
+    // تحديث الإجمالي
+    totalElement.textContent = `${subTotal.toLocaleString('ar-EG')} د.ج`;
+}
+
+
+// =================================================================
+// 4. وظيفة التهيئة (Initialization)
+// =================================================================
+
+document.addEventListener('DOMContentLoaded', () => {
+    // 4.1 تشغيل تحديث العداد عند تحميل أي صفحة
+    updateCartCount(); 
+
+    // 4.2 ربط أزرار "أضف للسلة" (في صفحة المنتجات)
+    const addButtons = document.querySelectorAll('.add-to-cart-btn');
+    addButtons.forEach(button => {
+        button.addEventListener('click', (event) => {
+            const card = event.target.closest('.product-card');
+            
+            const name = card.getAttribute('data-name');
+            const price = parseFloat(card.getAttribute('data-price'));
+            const id = card.getAttribute('data-id'); 
+
+            if (name && price && id) {
+                addToCart(name, price, id);
+            } else {
+                console.error("خطأ: خصائص data-name أو data-price أو data-id مفقودة!");
+            }
+        });
+    });
+    
+    // 4.3 ربط أيقونة السلة (لفتح السلة المصغرة)
+    const cartIcon = document.getElementById('cart-icon');
+    if (cartIcon) {
+        cartIcon.addEventListener('click', (e) => {
+            e.preventDefault(); // منع الانتقال إلى صفحة cart.html
+            toggleMiniCart();
+        });
+    }
+    
+    // 4.4 إغلاق السلة المصغرة عند النقر خارجها
+    document.addEventListener('click', (e) => {
+        const miniCart = document.getElementById('mini-cart');
+        const cartIcon = document.getElementById('cart-icon');
+        
+        // التحقق من أن النقر ليس داخل السلة المصغرة ولا على زر الأيقونة
+        if (miniCart && cartIcon && 
+            !miniCart.contains(e.target) && 
+            !cartIcon.contains(e.target) &&
+            miniCart.classList.contains('visible')) {
+                
+            miniCart.classList.remove('visible');
+        }
+    });
+
+});
+
+// =================================================================
+// 5. وظيفة عرض وحساب السلة (لصفحة cart.html - إذا أنشأتها لاحقاً)
+// يمكنك تجاهل هذا القسم الآن، ولكنه مهم لصفحة الدفع الكاملة
+// =================================================================
+
+// هذا الكود يمكن وضعه في ملف JavaScript منفصل لصفحة cart.html أو تركه هنا
+// شريطة أن يتم تشغيله فقط في تلك الصفحة إذا كانت العناصر موجودة.
+function renderFullCartPage() {
+    if (!document.getElementById('cart-items-container')) return;
+    
+    // كود عرض السلة الكاملة هنا... 
+    // (استخدم نفس منطق renderMiniCart ولكن لعرض تفاصيل أكثر)
+}
+
+// يمكنك استدعاء renderFullCartPage في التهيئة إذا كنت في cart.html
+if (window.location.pathname.includes('cart.html')) {
+    document.addEventListener('DOMContentLoaded', renderFullCartPage);
+}</script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap">
     <link rel="stylesheet" href="scc.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -61,7 +269,7 @@
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
         .product-card img {
-            width: 80%;
+            width: 50%;
             height: 300px;
             object-fit: cover;
             border-bottom: 1px solid #dee2e6;
@@ -185,10 +393,25 @@
         <h1>karim shop</h1>
         <div class="container">
         <a href="#" class="logo">APPLE STORE</a>
-        <nav> </nav>   
-            <a href="cart.html" class="cart-link">
+        <nav>
+            <a href="#" id="cart-icon" class="cart-link">
                 🛒 السلة (<span id="cart-count">0</span>)
             </a>
+            
+            <div id="mini-cart" class="mini-cart-dropdown">
+                
+                <div id="mini-cart-items">
+                    <p>السلة فارغة.</p>
+                </div>
+                
+                <div class="mini-cart-summary">
+                    <span>الإجمالي الفرعي:</span>
+                    <span id="mini-cart-total">0 د.ج</span>
+                </div>
+                
+                <a href="cart.html" class="checkout-btn-mini">إتمام الطلب</a>
+                
+            </div>
             </nav>
     </div>
 </header>
@@ -215,7 +438,7 @@
                     </div>
                 </div>
 
-                <div class="product-card" data-id="power banc" data-name="power banc" data-price="28000">
+                <div class="product-card" data-id="power banc" data-name="power banc" data-price="800">
                     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2pCA-0Jr77W0EWWJQzHOiMKoB-vjYOdmkLg&s" alt="ساعة ذكية">
                     <div class="product-info">
                         <h3>power banc</h3>
