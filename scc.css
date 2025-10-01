@@ -184,8 +184,8 @@ header .container {
     justify-content: center;
     
     /* المظهر الدائري */
-    min-width: 22px; /* يضمن مساحة كافية للأرقام */
-    height: 22px;
+    min-width: 15px; /* يضمن مساحة كافية للأرقام */
+    height: 15px;
     border-radius: 50%;
     
     /* الألوان */
@@ -194,8 +194,8 @@ header .container {
     
     /* موقع العداد (تثبيته كشارة) */
     position: absolute;
-    top: -5px; /* رفع العداد فوق الزر */
-    right: -5px; /* وضعه على الزاوية اليمنى العليا */
+    top: -0px; /* رفع العداد فوق الزر */
+    right: -0px; /* وضعه على الزاوية اليمنى العليا */
     
     /* الخط والحجم */
     font-size: 0.8em;
