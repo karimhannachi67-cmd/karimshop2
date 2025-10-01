@@ -1,180 +1,223 @@
-/* -------------------- 1. المتغيرات والألوان الأساسية -------------------- */
+/* -------------------- إعدادات عامة (إذا لم تكن موجودة) -------------------- */
 :root {
-    --primary-color: #007bff;   /* أزرق نقي للتركيز (Apple Blue/ Cyan) */
-    --accent-color: #28a745;    /* أخضر لزر الشراء والسعر */
-    --text-dark: #343a40;       /* لون نص غامق */
-    --text-light: #6c757d;      /* لون نص ثانوي (للوصف) */
-    --background-soft: #f8f9fa; /* خلفية ناعمة جداً */
-    --card-bg: #ffffff;         /* خلفية البطاقة بيضاء */
-    --shadow-subtle: 0 4px 12px rgba(0, 0, 0, 0.05); /* ظل خفيف */
+    --nike-black: #000700;         /* أسود عميق للنص والخلفية الأساسية */
+    --nike-white: #f8f6f6;
+    --nike-gray: #f5f2f2;       /* رمادي فاتح للخلفية الناعمة */
+    --accent-color: #00d9ff;    /* أزرق/أحمر خفيف للحركة */
+    --shadow-deep: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
-body {
-    font-family: 'Cairo', sans-serif; /* يجب ربط خط القاهرة في HTML */
-    margin: 0;
-    padding: 0;
-    background-color: var(--background-soft);
-    color: var(--text-dark);
-    direction: rtl;
-    line-height: 1.6;
-}
+/* -------------------- 1. تنسيق الحاوية الرئيسية للسلة -------------------- */
 
-.container {
-    width: 90%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px 0;
-}
-
-/* -------------------- 2. الهيدر وشريط التنقل -------------------- */
-header {
-    background-color: var(--text-dark); /* شريط علوي غامق وأنيق */
-    color: white;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    padding: 10px 0;
-}
-
+/* مهم: تحديد موضع الحاوية الرئيسية (الهيدر) ليكون مرجعاً للموقع المطلق */
 header .container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    position: relative; 
 }
 
-.logo {
-    font-size: 1.8em;
-    font-weight: 700;
-    color: white;
-    text-decoration: none;
-}
-
-nav a {
-    color: #ced4da;
-    text-decoration: none;
-    margin-right: 25px;
-    font-size: 1em;
-    transition: color 0.3s;
-}
-
-nav a:hover {
-    color: white;
-}
-
-.cart-link {
-    background-color: var(--primary-color);
-    padding: 8px 15px;
-    border-radius: 5px;
-    font-weight: 600;
-    transition: background-color 0.3s;
-}
-
-.cart-link:hover {
-    background-color: #0056b3;
-}
-
-/* -------------------- 3. قائمة المنتجات والشبكة -------------------- */
-.page-title {
-    text-align: center;
-    margin: 50px 0 40px;
-    font-size: 2.5em;
-    color: var(--text-dark);
-}
-
-.products-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 30px;
-}
-
-.product-card {
-    background-color: var(--card-bg);
-    border: 1px solid #e9ecef; /* حدود خفيفة */
+.mini-cart-dropdown {
+    display: none; 
+    border-bottom: #dc3545;
+    position: absolute;
+    top: 120%; /* يظهر أسفل الأيقونة بمسافة قليلة */
+    right: 5%; 
+    width: 350px; /* عرض أكبر لتصميم أكثر فخامة */
+   
+    background-color: var(--nike-white);
+    border: none; /* إزالة الحدود، الاعتماد على الظل */
     border-radius: 10px;
-    overflow: hidden;
-    box-shadow: var(--shadow-subtle);
-    transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.product-card:hover {
-    transform: translateY(-5px); /* رفع البطاقة عند التمرير */
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-}
-
-.product-img {
-    width: 100%;
-    height: 220px;
-    object-fit: contain; /* للحفاظ على نسب المنتج */
+    box-shadow: var(--shadow-deep);
+    z-index: 2000;
     padding: 20px;
+    
+    /* رسوم متحركة متطورة: الظهور بتأثير بسيط */
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
 }
 
-.product-info {
-    padding: 20px;
-    text-align: right;
+/* الكلاس الذي يظهره JavaScript */
+.mini-cart-dropdown.visible {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
 }
 
-.product-info h3 {
-    margin-top: 0;
-    font-size: 1.3em;
+/* -------------------- 2. رأس السلة ومحتوياتها -------------------- */
+
+.mini-cart-title {
+    font-size: 1.5em;
+    font-weight: 700;
+    color: var(--nike-black);
+    margin-bottom: 20px;
 }
 
-.description {
-    color: var(--text-light);
-    font-size: 0.9em;
+#mini-cart-items {
+    max-height: 300px;
+    overflow-y: auto;
+    padding-bottom: 10px;
     margin-bottom: 15px;
 }
 
-/* -------------------- 4. السعر وزر الشراء -------------------- */
-.price-action {
+/* شريط تمرير أنيق (متطور) */
+#mini-cart-items::-webkit-scrollbar {
+    width: 6px;
+}
+#mini-cart-items::-webkit-scrollbar-thumb {
+    background-color: var(--nike-black);
+    border-radius: 10px;
+}
+
+/* -------------------- 3. تنسيق المنتج الواحد (الكلاسيكي) -------------------- */
+
+.mini-cart-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-top: 15px;
-    margin-top: 15px;
-    border-top: 1px solid #dee2e6;
+    padding: 10px 0;
+    border-top: 1px solid #e9ecef; /* خط كلاسيكي خفيف */
+    font-size: 1em;
 }
 
-.price {
-    font-size: 1.5em;
+.mini-cart-item:last-child {
+    border-bottom: 1px solid #e9ecef; 
+}
+
+.item-details-mini {
+    flex-grow: 1;
+    color: var(--nike-black);
+    font-weight: 500;
+}
+
+.item-total-price {
     font-weight: 700;
-    color: var(--accent-color); /* السعر باللون الأخضر الجذاب */
+    color: var(--nike-black);
 }
 
-.add-to-cart-btn {
-    background-color: var(--primary-color);
-    color: white;
-    padding: 10px 20px;
+/* -------------------- 4. زر الحذف (رسومات متحركة) -------------------- */
+
+.mini-cart-item .remove-btn-mini {
+    background: none;
     border: none;
-    border-radius: 50px; /* زر بيضاوي عصري */
+    color: var(--text-light, #999); 
     cursor: pointer;
-    font-weight: 600;
-    transition: background-color 0.3s;
+    font-size: 1.2em;
+    margin-left: 10px;
+    padding: 5px;
+    line-height: 1; /* ضبط الموضع */
+    
+    /* تأثير الحركة عند التمرير */
+    transition: color 0.3s ease-in-out, transform 0.2s;
 }
 
-.add-to-cart-btn:hover {
-    background-color: #0056b3;
+.mini-cart-item .remove-btn-mini:hover {
+    color: #dc3545; /* يتحول إلى الأحمر عند التمرير */
+    transform: scale(1.1); /* تكبير بسيط */
 }
 
-/* -------------------- 5. الفوتر (تذييل الصفحة) -------------------- */
-footer {
-    background-color: var(--text-dark);
-    color: #f8f9fa;
+/* -------------------- 5. ملخص الطلب وزر الشراء (الحديث) -------------------- */
+
+.mini-cart-summary {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 700;
+    margin: 15px 0;
+    padding: 10px 0;
+    border-top: 2px solid var(--nike-black); /* خط سميك كلاسيكي */
+    font-size: 1.3em;
+}
+
+.checkout-btn-mini {
+    display: block;
+    width: 100%;
     text-align: center;
-    padding: 20px 0;
-    margin-top: 50px;
-    font-size: 0.9em;
+    background-color: var(--nike-black); /* زر أسود جريء */
+    color: var(--nike-white);
+    padding: 12px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 600;
+    
+    /* رسومات متحركة (انتقال لوني سلس) */
+    transition: background-color 0.3s ease-in-out;
 }
 
-/* -------------------- 6. استجابة التصميم -------------------- */
-@media (max-width: 768px) {
-    .products-grid {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    }
+.checkout-btn-mini:hover {
+    background-color: #333; /* يصبح رمادي داكن عند التمرير */
 }
-@media (max-width: 576px) {
-    .price-action {
-        flex-direction: column;
-        gap: 10px;
-    }
-    .add-to-cart-btn {
-        width: 100%;
-    }
+
+/* -------------------- 6. رسوم متحركة وتفاصيل إضافية -------------------- */
+
+/* رسوم متحركة عند النقر (لأيقونة السلة نفسها - يجب أن تطبق هذا الكلاس في HTML) */
+/* -------------------- 1. تنسيق رابط السلة كزر/أيقونة -------------------- */
+
+.cart-link {
+    /* أساسيات التصميم */
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 50px; /* جعل الزر بيضاويًا/مستديرًا */
+    background-color: var(--nike-black, #04fd2d); /* خلفية سوداء جريئة */
+    color: var(--nike-white, #ffffff);
+    font-size: 1.1em;
+    font-weight: 600;
+    
+    /* تحديد الموضع بالنسبة للعداد */
+    position: relative;
+    overflow: hidden; /* مهم لضمان عدم خروج العداد عن الحدود (اختياري) */
+    
+    /* رسوم متحركة عند التمرير */
+    transition: background-color 0.3s ease, transform 0.1s;
+}
+
+.cart-link:hover {
+    background-color: #333; /* يصبح رمادي داكن عند التمرير */
+    transform: translateY(-1px); /* تأثير رفع بسيط */
+}
+
+/* -------------------- 2. تنسيق العداد الداخلي -------------------- */
+
+#cart-count {
+    /* العداد نفسه (الرقم) */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* المظهر الدائري */
+    min-width: 22px; /* يضمن مساحة كافية للأرقام */
+    height: 22px;
+    border-radius: 50%;
+    
+    /* الألوان */
+    background-color: #dc3545; /* أحمر بارز لجذب الانتباه */
+    color: white;
+    
+    /* موقع العداد (تثبيته كشارة) */
+    position: absolute;
+    top: -5px; /* رفع العداد فوق الزر */
+    right: -5px; /* وضعه على الزاوية اليمنى العليا */
+    
+    /* الخط والحجم */
+    font-size: 0.8em;
+    font-weight: 700;
+    line-height: 1;
+    padding: 2px;
+    
+    /* تأثير الرسوم المتحركة (اختياري لكن متطور) */
+    transform: scale(1.1);
+    animation: bounce-in 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+/* -------------------- 3. الرسوم المتحركة للظهور -------------------- */
+
+@keyframes bounce-in {
+    0% { transform: scale(0.5); opacity: 0; }
+    70% { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(1.1); }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
 }
